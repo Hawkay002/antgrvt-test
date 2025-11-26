@@ -1,0 +1,333 @@
+:root {
+    --bg-color: #0f0f1f;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --primary-color: #ff00ff; /* Neon Pink */
+    --secondary-color: #00ffff; /* Cyan */
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --success-color: #00ff00;
+    --error-color: #ff0000;
+    --font-family: 'Outfit', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden; /* Prevent body scroll, handle in containers */
+}
+
+#app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), #bc13fe);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+input, select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-family: var(--font-family);
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+}
+
+/* Auth Section */
+#auth-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1f 100%);
+}
+.auth-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+.auth-card h1 {
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Main App Layout */
+.app-header {
+    padding: 15px 20px;
+    background: rgba(15, 15, 31, 0.9);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.btn-icon {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    padding-bottom: 80px; /* Space for bottom nav */
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+.card h3 {
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+/* Ticket Preview */
+.ticket-card {
+    background: linear-gradient(135deg, #2a0845, #6441A5);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.ticket-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+}
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed rgba(255,255,255,0.3);
+    padding-bottom: 10px;
+}
+.ticket-id {
+    font-family: monospace;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+.ticket-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#qrcode {
+    background: white;
+    padding: 5px;
+    border-radius: 4px;
+}
+#qrcode img {
+    display: block;
+}
+.ticket-footer {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    text-align: right;
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+th {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+/* Scanner */
+#scanner-container {
+    width: 100%;
+    height: 300px;
+    background: black;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+#scanner-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.scanner-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+.scan-result {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+.scan-success { background: rgba(0, 255, 0, 0.2); color: #00ff00; }
+.scan-error { background: rgba(255, 0, 0, 0.2); color: #ff0000; }
+
+/* Bottom Nav */
+.bottom-nav {
+    background: rgba(15, 15, 31, 0.95);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    position: sticky;
+    bottom: 0;
+    backdrop-filter: blur(10px);
+}
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.nav-item .icon {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+.nav-item.active {
+    color: var(--primary-color);
+}
+.nav-item.active .icon {
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .bottom-nav {
+        display: none; /* Use side nav or header nav on desktop if expanded */
+    }
+    /* For this simple app, we'll keep bottom nav or move to top, 
+       but let's just center the content for desktop */
+    #app {
+        max-width: 480px;
+        margin: 0 auto;
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+}

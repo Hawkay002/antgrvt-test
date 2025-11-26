@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Ticketing System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Auth Section -->
+        <section id="auth-section" class="active-section">
+            <div class="auth-card">
+                <h1>Event Access</h1>
+                <p>Login to manage tickets</p>
+                <form id="login-form">
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <div id="auth-error" class="error-message"></div>
+            </div>
+        </section>
+
+        <!-- Main App Section -->
+        <section id="app-section" class="hidden">
+            <header class="app-header">
+                <h2 id="header-event-name">Event Name</h2>
+                <button id="logout-btn" class="btn-icon">Logout</button>
+            </header>
+
+            <main class="tab-content">
+                <!-- Create Ticket Tab -->
+                <div id="tab-create" class="tab-pane active">
+                    <div class="card">
+                        <h3>Create Ticket</h3>
+                        <form id="create-ticket-form">
+                            <div class="input-group">
+                                <label>Full Name</label>
+                                <input type="text" id="ticket-name" required>
+                            </div>
+                            <div class="row">
+                                <div class="input-group">
+                                    <label>Gender</label>
+                                    <select id="ticket-gender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Age</label>
+                                    <input type="number" id="ticket-age" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="ticket-phone" value="+91 " required>
+                            </div>
+                            <button type="submit" class="btn-primary">Generate Ticket</button>
+                        </form>
+                    </div>
+
+                    <div id="ticket-preview-container" class="hidden">
+                        <div id="ticket-card" class="ticket-card">
+                            <div class="ticket-header">
+                                <h3 id="preview-event-name">Event Name</h3>
+                                <span id="preview-id" class="ticket-id">#ID</span>
+                            </div>
+                            <div class="ticket-body">
+                                <div class="ticket-info">
+                                    <p><strong id="preview-name">Name</strong></p>
+                                    <p><span id="preview-gender">Gender</span>, <span id="preview-age">Age</span></p>
+                                    <p id="preview-phone">Phone</p>
+                                </div>
+                                <div id="qrcode"></div>
+                            </div>
+                            <div class="ticket-footer">
+                                <p id="preview-place">Event Place</p>
+                                <p id="preview-time">Time</p>
+                            </div>
+                        </div>
+                        <button id="share-btn" class="btn-whatsapp">Share on WhatsApp</button>
+                    </div>
+                </div>
+
+                <!-- Booked Tickets Tab -->
+                <div id="tab-booked" class="tab-pane">
+                    <div class="card full-height">
+                        <div class="card-header">
+                            <h3>Booked Tickets</h3>
+                            <button id="delete-selected-btn" class="btn-danger hidden">Delete Selected</button>
+                        </div>
+                        <div class="table-container">
+                            <table id="tickets-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="select-all"></th>
+                                        <th>Name</th>
+                                        <th>Details</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validate Entry Tab -->
+                <div id="tab-validate" class="tab-pane">
+                    <div class="card scanner-card">
+                        <h3>Scan Ticket</h3>
+                        <div id="scanner-container">
+                            <video id="scanner-video" playsinline></video>
+                            <canvas id="scanner-canvas" hidden></canvas>
+                            <div class="scanner-overlay"></div>
+                        </div>
+                        <div id="scan-result" class="scan-result hidden">
+                            <p id="scan-message">Scanning...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" class="tab-pane">
+                    <div class="card">
+                        <h3>Event Settings</h3>
+                        <form id="settings-form">
+                            <div class="input-group">
+                                <label>Event Name</label>
+                                <input type="text" id="setting-event-name" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Event Place</label>
+                                <input type="text" id="setting-event-place" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Arrival Deadline</label>
+                                <input type="datetime-local" id="setting-event-time" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-tab="tab-create">
+                    <span class="icon">🎫</span>
+                    <span>Create</span>
+                </button>
+                <button class="nav-item" data-tab="tab-booked">
+                    <span class="icon">📋</span>
+                    <span>Booked</span>
+                </button>
+                <button class="nav-item" data-tab="tab-validate">
+                    <span class="icon">📷</span>
+                    <span>Scan</span>
+                </button>
+                <button class="nav-item" data-tab="tab-settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </nav>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
